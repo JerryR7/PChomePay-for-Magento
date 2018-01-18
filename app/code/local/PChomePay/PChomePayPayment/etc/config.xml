@@ -1,0 +1,27 @@
+<config>
+    <modules>
+        <PChomePay_PChomePayPayment>
+            <version>0.0.1</version>
+        </PChomePay_PChomePayPayment>
+    </modules>
+
+    <global>
+        <models>
+            <pchomepaypayment>
+                <class>PChomePay_PChomePayPayment_Model</class>
+            </pchomepaypayment>
+        </models>
+        <blocks>
+            <pchomepaypayment>
+                <class>PChomePay_PChomePayPayment_Block</class>
+            </pchomepaypayment>
+        </blocks>
+        <helpers>
+            <pchomepaypayment>
+                <class>PChomePay_PChomePayPayment_Helper</class>
+            </pchomepaypayment>
+        </helpers>
+    </global>
+
+
+</config>
