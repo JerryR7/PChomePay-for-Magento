@@ -16,7 +16,7 @@
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>1</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </active>
                         <title translate="label">
@@ -33,7 +33,7 @@
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>使用支付連 SandBox 測試環境</comment>
                         </pchomepay_testMode>
@@ -42,7 +42,7 @@
                             <frontend_type>text</frontend_type>
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>必填</comment>
                         </pchomepay_appID>
@@ -51,7 +51,7 @@
                             <frontend_type>text</frontend_type>
                             <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>必填</comment>
                         </pchomepay_secret>
@@ -60,7 +60,7 @@
                             <frontend_type>text</frontend_type>
                             <sort_order>6</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>必填</comment>
                         </pchomepay_sandboxSecret>
@@ -70,7 +70,7 @@
                             <sort_order>7</sort_order>
                             <source_model>pchomepaypayment/source_paymentmethods</source_model>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>按下 CTRL 與 滑鼠左鍵 以選擇多種付款方式</comment>
                         </pchomepay_paymentMethods>
@@ -80,7 +80,7 @@
                             <sort_order>8</sort_order>
                             <source_model>pchomepaypayment/source_cardinstallment</source_model>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>按下 CTRL 與 滑鼠左鍵 以選擇多種分期方式</comment>
                         </pchomepay_cardInstallment>
@@ -89,7 +89,7 @@
                             <frontend_type>text</frontend_type>
                             <sort_order>9</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <comment>請輸入 ATM 虛擬帳號繳費期限(1~5天)，預設 5 天</comment>
                         </pchomepay_atmExpiredate>
