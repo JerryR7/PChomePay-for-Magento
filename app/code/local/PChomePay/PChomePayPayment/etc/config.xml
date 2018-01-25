@@ -33,4 +33,37 @@
             </pchomepaypayment_paymentmodel>
         </payment>
     </default>
+
+    <adminhtml>
+        <translate>
+            <modules>
+                <PChomePay_PChomePayPayment>
+                    <files>
+                        <default>PChomePay_Payment.csv</default>
+                    </files>
+                </PChomePay_PChomePayPayment>
+            </modules>
+        </translate>
+    </adminhtml>
+
+    <frontend>
+        <routers>
+            <pchomepaypayment>
+                <use>standard</use>
+                <args>
+                    <module>PChomePay_PChomePayPayment</module>
+                    <frontName>pchomepaypayment</frontName>
+                </args>
+            </pchomepaypayment>
+        </routers>
+        <translate>
+            <modules>
+                <PChomePay_PChomePayPayment>
+                    <files>
+                        <default>PChomePay_Payment.csv</default>
+                    </files>
+                </PChomePay_PChomePayPayment>
+            </modules>
+        </translate>
+    </frontend>
 </config>

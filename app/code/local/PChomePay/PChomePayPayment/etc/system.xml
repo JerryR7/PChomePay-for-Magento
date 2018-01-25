@@ -16,7 +16,7 @@
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>1</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </active>
                         <title translate="label">
@@ -33,32 +33,36 @@
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <comment>使用支付連 SandBox 測試環境</comment>
                         </pchomepay_testMode>
                         <pchomepay_appID translate="label">
-                            <label>APP ID(*)</label>
+                            <label>APP ID</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <comment>必填</comment>
                         </pchomepay_appID>
                         <pchomepay_secret translate="label">
-                            <label>SECRET(*)</label>
+                            <label>SECRET</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <comment>必填</comment>
                         </pchomepay_secret>
                         <pchomepay_sandboxSecret translate="label">
-                            <label>SANDBOX SECRET(*)</label>
+                            <label>SANDBOX SECRET</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>6</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <comment>必填</comment>
                         </pchomepay_sandboxSecret>
                         <pchomepay_paymentMethods translate="label">
                             <label>付款方式</label>
@@ -68,8 +72,27 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>多選: Ctrl + 選取</comment>
+                            <comment>按下 CTRL 與 滑鼠左鍵 以選擇多種付款方式</comment>
                         </pchomepay_paymentMethods>
+                        <pchomepay_cardInstallment translate="label">
+                            <label>信用卡分期</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>8</sort_order>
+                            <source_model>pchomepaypayment/source_cardinstallment</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>按下 CTRL 與 滑鼠左鍵 以選擇多種分期方式</comment>
+                        </pchomepay_cardInstallment>
+                        <pchomepay_atmExpiredate translate="label">
+                            <label>ATM 虛擬帳號繳費期限</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>請輸入 ATM 虛擬帳號繳費期限(1~5天)，預設 5 天</comment>
+                        </pchomepay_atmExpiredate>
 
                         <allowspecific translate="label">
                             <label>Payment from Applicable Countries</label>
