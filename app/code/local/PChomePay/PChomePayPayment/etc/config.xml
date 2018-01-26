@@ -37,11 +37,11 @@
     <adminhtml>
         <translate>
             <modules>
-                <PChomePay_PChomePayPayment>
+                <pchomepay_pchomepaypayment>
                     <files>
                         <default>PChomePay_Payment.csv</default>
                     </files>
-                </PChomePay_PChomePayPayment>
+                </pchomepay_pchomepaypayment>
             </modules>
         </translate>
     </adminhtml>
