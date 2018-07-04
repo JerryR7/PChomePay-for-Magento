@@ -27,7 +27,7 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
     protected $_canCreateBillingAgreement   = false;
     protected $_canManageRecurringProfiles  = true;
 
-    private $moduleName = 'pchomepayment';
+    private $moduleName = 'pchomepaypayment';
     private $prefix = 'pchomepay_';
     private $libraryList = array('PChomePayClient.php', 'ApiException.php', 'OrderStatusCodeEnum.php');
 
@@ -38,16 +38,16 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
 
     public function assignData($data)
     {
-        $opayHelper = Mage::helper($this->moduleName . '');
-        $opayHelper->destroyChoosenPayment();
-        $choosenPayment = $data->getOpayChoosenPayment();
-        $opayHelper->setChoosenPayment($choosenPayment);
+        $pchomePayHelper = Mage::helper($this->moduleName . '');
+        $pchomePayHelper->destroyChoosenPayment();
+        $choosenPayment = $data->getPChomePayChoosenPayment();
+        $pchomePayHelper->setChoosenPayment($choosenPayment);
         return $this;
     }
 
     public function getValidPayments()
     {
-        $payments = $this->getOpayConfig('payment_methods', true);
+        $payments = $this->getPChomePayConfig('payment_methods', true);
         $trimed = trim($payments);
         return explode(',', $trimed);
     }
@@ -58,7 +58,7 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
         return (in_array($choosenPayment, $payments));
     }
 
-    public function getOpayConfig($name)
+    public function getPChomePayConfig($name)
     {
         return $this->getMagentoConfig($this->prefix . $name);
     }
@@ -75,8 +75,8 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
     }
 
     public function getHelper() {
-        $merchant_id = $this->getOpayConfig('merchant_id');
-        return new OpayCartLibrary(array('merchantId' => $merchant_id));
+        $merchant_id = $this->getPChomePayConfig('merchant_id');
+        return new PChomePayCartLibrary(array('merchantId' => $merchant_id));
     }
 
     public function getModuleUrl($action = '')
