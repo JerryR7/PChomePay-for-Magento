@@ -8,7 +8,7 @@
 
 class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_Method_Abstract
 {
-    protected $_code = 'PChomePayPayment_Model';
+    protected $_code = 'PChomePayPayment_PaymentModel';
     protected $_isGateway                   = true;
     protected $_canOrder                    = true;
     protected $_canAuthorize                = true;
@@ -26,10 +26,23 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
     protected $_canReviewPayment            = false;
     protected $_canCreateBillingAgreement   = false;
     protected $_canManageRecurringProfiles  = true;
+    protected $_order;
 
     private $moduleName = 'pchomepaypayment';
     private $prefix = 'pchomepay_';
     private $libraryList = array('PChomePayClient.php', 'ApiException.php', 'OrderStatusCodeEnum.php');
+
+    /**
+     * Get order model
+     *
+     * @return Mage_Sales_Model_Order
+     */
+    public function getOrder() {
+        if (!$this->_order) {
+            $this->_order = $this->getInfoInstance()->getOrder();
+        }
+        return $this->_order;
+    }
 
     public function getOrderPlaceRedirectUrl()
     {

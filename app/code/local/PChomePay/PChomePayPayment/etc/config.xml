@@ -26,7 +26,7 @@
     <default>
         <payment>
             <pchomepaypayment_paymentmodel>
-                <model>pchomepaypayment/paymentmodel</model>
+                <model>pchomepaypayment/paymentModel</model>
                 <order_status>1</order_status>
                 <title>支付連 PChomePay</title>
                 <active>1</active>

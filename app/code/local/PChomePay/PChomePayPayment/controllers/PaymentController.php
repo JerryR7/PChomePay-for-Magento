@@ -14,6 +14,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
      * @return Mage_Checkout_Model_Session
      */
     protected function _getCheckout() {
+
         return Mage::getSingleton('checkout/session');
     }
 
@@ -21,6 +22,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
      * when customer selects pchomepaypayment payment method
      */
     public function redirectAction() {
+
         try {
             $session = $this->_getCheckout();
             $order = Mage::getModel('sales/order');
@@ -35,7 +37,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
                 $order->setEmailSent(true);
             }
 
-            $this->_redirect('pchomepaypayment/processing/pchomepay');
+            $this->_redirect('pchomepaypayment/payment/pchomepay');
 
             return;
         } catch (Mage_Core_Exception $e) {
@@ -45,6 +47,8 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         }
     }
 
+
+    ///////////////////////////////// PChomePay Payment Action /////////////////////////////////////////////
     public function pchomepayAction() {
         try {
             // =========================== GET PARAMS OP ===========================
@@ -68,7 +72,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             $price = $this->translateNumberFormat($order['base_grand_total']);
 
             // 在controller須先呼叫model cvs後才能使用getConfigData()
-            $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
+            $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_Payment');
 
             // merchantID, hashkey, hashiv
             $pchomepay_merchantID = trim($mageModel->getConfigData('pchomepay_merchantID'));
@@ -209,7 +213,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         $result = "";
 
         // 在controller須先呼叫model cvs後才能使用getConfigData()
-        $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
+        $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_Payment');
 
         $hashiv = trim($mageModel->getConfigData('pchomepay_hashiv'));
         $hashkey = trim($mageModel->getConfigData('pchomepay_hashkey'));
