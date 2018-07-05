@@ -18,7 +18,7 @@ class PChomePay_PChomePayPayment_Helper_Data extends Mage_Payment_Helper_Data
 
     public function __construct()
     {
-        $this->paymentModel = Mage::getModel($this->moduleName . '/paymentmodel');
+        $this->paymentModel = Mage::getModel($this->moduleName . '/paymentModel');
         $this->errorMessages = array(
             'invalidPayment' => $this->__($this->prefix . 'payment_checkout_invalid_payment'),
             'invalidOrder' => $this->__($this->prefix . 'payment_checkout_invalid_order'),
