@@ -88,13 +88,12 @@
 
     <default>
         <payment>
-            <pchomepaypayment_paymentModel>
+            <pchomepaypayment_paymentmodel>
                 <model>pchomepaypayment/paymentModel</model>
                 <order_status>1</order_status>
                 <title>支付連 PChomePay</title>
                 <active>1</active>
-            </pchomepaypayment_paymentModel>
+            </pchomepaypayment_paymentmodel>
         </payment>
     </default>
-
 </config>

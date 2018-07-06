@@ -14,6 +14,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
      * @return Mage_Checkout_Model_Session
      */
     protected function _getCheckout() {
+        Mage::log(123123123);
 
         return Mage::getSingleton('checkout/session');
     }
@@ -22,7 +23,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
      * when customer selects pchomepaypayment payment method
      */
     public function redirectAction() {
-
+        Mage::log(123123123);
         try {
             $session = $this->_getCheckout();
             $order = Mage::getModel('sales/order');
