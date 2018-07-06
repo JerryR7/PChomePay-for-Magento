@@ -72,7 +72,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             $price = $this->translateNumberFormat($order['base_grand_total']);
 
             // 在controller須先呼叫model cvs後才能使用getConfigData()
-            $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_Payment');
+            $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
 
             // merchantID, hashkey, hashiv
             $pchomepay_merchantID = trim($mageModel->getConfigData('pchomepay_merchantID'));

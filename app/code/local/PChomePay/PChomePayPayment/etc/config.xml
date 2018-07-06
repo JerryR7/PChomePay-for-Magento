@@ -21,18 +21,27 @@
                 <class>PChomePay_PChomePayPayment_Helper</class>
             </pchomepaypayment>
         </helpers>
+        <resources>
+            <pchomepaypayment_setup>
+                <setup>
+                    <module>PChomePay_PChomePayPayment</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </pchomepaypayment_setup>
+            <pchomepaypayment_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </pchomepaypayment_write>
+            <pchomepaypayment_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </pchomepaypayment_read>
+        </resources>
     </global>
-
-    <default>
-        <payment>
-            <pchomepaypayment_paymentModel>
-                <model>pchomepaypayment/paymentModel</model>
-                <order_status>1</order_status>
-                <title>支付連 PChomePay</title>
-                <active>1</active>
-            </pchomepaypayment_paymentModel>
-        </payment>
-    </default>
 
     <adminhtml>
         <translate>
@@ -47,6 +56,9 @@
     </adminhtml>
 
     <frontend>
+        <secure_url>
+            <pchomepaypayment_payment>/PChomePayPayment/Payment</pchomepaypayment_payment>
+        </secure_url>
         <routers>
             <pchomepaypayment>
                 <use>standard</use>
@@ -65,5 +77,24 @@
                 </PChomePay_PChomePayPayment>
             </modules>
         </translate>
+        <layout>
+            <updates>
+                <pchomepaypayment>
+                    <file>pchomepaypayment.xml</file>
+                </pchomepaypayment>
+            </updates>
+        </layout>
     </frontend>
+
+    <default>
+        <payment>
+            <pchomepaypayment_paymentModel>
+                <model>pchomepaypayment/paymentModel</model>
+                <order_status>1</order_status>
+                <title>支付連 PChomePay</title>
+                <active>1</active>
+            </pchomepaypayment_paymentModel>
+        </payment>
+    </default>
+
 </config>
