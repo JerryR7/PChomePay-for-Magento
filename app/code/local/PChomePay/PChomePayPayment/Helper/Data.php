@@ -16,14 +16,21 @@ class PChomePay_PChomePayPayment_Helper_Data extends Mage_Payment_Helper_Data
 
     private $errorMessages = array();
 
-    public function __construct()
-    {
-        $this->paymentModel = Mage::getModel($this->moduleName . '/paymentModel');
-        $this->errorMessages = array(
-            'invalidPayment' => $this->__($this->prefix . 'payment_checkout_invalid_payment'),
-            'invalidOrder' => $this->__($this->prefix . 'payment_checkout_invalid_order'),
-        );
-    }
+//    public function __construct()
+//    {
+//        Mage::log(123123123);
+//
+//        $this->paymentModel = Mage::getModel($this->moduleName . '/paymentModel');
+//
+//        Mage::log($this->paymentModel);
+//        $this->errorMessages = array(
+//            'invalidPayment' => $this->__($this->prefix . 'payment_checkout_invalid_payment'),
+//            'invalidOrder' => $this->__($this->prefix . 'payment_checkout_invalid_order'),
+//        );
+//
+//        Mage::log($this->errorMessages);
+//
+//    }
 
     public function getPendingPaymentStatus()
     {
