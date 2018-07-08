@@ -3,12 +3,12 @@
     <sections>
         <payment>
             <groups>
-                <pchomepaypayment_paymentmodel translate="label" module="pchomepaypayment">
+                <pchomepaypayment translate="label" module="pchomepaypayment">
                     <label>支付連 PChomePay</label>
                     <sort_order>1000</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
+                    <show_in_store>0</show_in_store>
                     <fields>
                         <active translate="label">
                             <label>啓用/停用</label>
@@ -113,7 +113,7 @@
                             <show_in_store>0</show_in_store>
                         </specificcountry>
                     </fields>
-                </pchomepaypayment_paymentmodel>
+                </pchomepaypayment>
             </groups>
         </payment>
     </sections>

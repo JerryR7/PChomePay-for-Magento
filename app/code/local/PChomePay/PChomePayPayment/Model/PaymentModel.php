@@ -8,7 +8,7 @@
 
 class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_Method_Abstract
 {
-    protected $_code = 'PChomePayPayment_PaymentModel';
+    protected $_code = 'pchomepaypayment';
     protected $_isGateway                   = true;
     protected $_canOrder                    = true;
     protected $_canAuthorize                = true;
@@ -40,6 +40,7 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
      * @return Mage_Sales_Model_Order
      */
     public function getOrder() {
+        Mage::log(123123123);
         if (!$this->_order) {
             $this->_order = $this->getInfoInstance()->getOrder();
         }
