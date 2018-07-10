@@ -26,7 +26,6 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
      * when customer selects pchomepaypayment payment method
      */
     public function redirectAction() {
-        Mage::log(123123123);
         try {
             $session = $this->_getCheckout();
             $order = Mage::getModel('sales/order');
@@ -34,11 +33,14 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
 
             if ($order->getState() != Mage_Sales_Model_Order::STATE_PENDING_PAYMENT) {
                 $order->setState(
-                    Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, $this->_getPendingPaymentStatus(), Mage::helper('pchomepaypayment')->__('轉向至PChomePay中，請稍候...')
+                    Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, $this->getPendingPaymentStatus(), '轉向至PChomePay中，請稍候...'
                 )->save();
 
+                Mage::log(123);
                 $order->sendNewOrderEmail();
                 $order->setEmailSent(true);
+                Mage::log(123);
+
             }
 
             $this->_redirect('pchomepaypayment/payment/pchomepay');
@@ -64,8 +66,14 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             // 在controller須先呼叫model cvs後才能使用getConfigData()
             $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
 
+            Mage::log($this->order);
+            Mage::log(123123);
             // testmode
             $pchomepay_testmode = $mageModel->getConfigData('pchomepay_testMode');
+
+            $pchomepayClient = $mageModel->getPChomePayClient();
+
+
 
             // =========================== POST DATA OP ===========================
             $post_url = ($pchomepay_testmode == '1') ? 'https://ccore.pchomepay.com/MPG/mpg_gateway' : 'https://core.pchomepay.com/MPG/mpg_gateway';
@@ -161,7 +169,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         return $result;
     }
 
-    protected function _getPendingPaymentStatus() {
+    protected function getPendingPaymentStatus() {
         return Mage::helper('pchomepaypayment')->getPendingPaymentStatus();
     }
 

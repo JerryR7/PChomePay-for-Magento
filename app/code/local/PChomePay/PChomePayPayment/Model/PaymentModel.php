@@ -9,23 +9,13 @@
 class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_Method_Abstract
 {
     protected $_code = 'pchomepaypayment';
-    protected $_isGateway                   = true;
-    protected $_canOrder                    = true;
-    protected $_canAuthorize                = true;
-    protected $_canCapture                  = true;
-    protected $_canCapturePartial           = false;
-    protected $_canCaptureOnce              = false;
-    protected $_canRefund                   = false;
-    protected $_canRefundInvoicePartial     = true;
-    protected $_canVoid                     = true;
-    protected $_canUseInternal              = true;
-    protected $_canUseCheckout              = true;
-    protected $_canUseForMultishipping      = true;
-    protected $_isInitializeNeeded          = false;
-    protected $_canFetchTransactionInfo     = true;
-    protected $_canReviewPayment            = false;
-    protected $_canCreateBillingAgreement   = false;
-    protected $_canManageRecurringProfiles  = true;
+    protected $_isGateway = false;
+    protected $_canAuthorize = true;
+    protected $_canCapture = true;
+    protected $_canVoid = false;
+    protected $_canUseInternal = false;
+    protected $_canUseCheckout = true;
+    protected $_canUseForMultishipping = false;
     protected $_paymentMethod = '';
     protected $_testUrl = '';
     protected $_order;
@@ -40,7 +30,6 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
      * @return Mage_Sales_Model_Order
      */
     public function getOrder() {
-        Mage::log(123123123);
         if (!$this->_order) {
             $this->_order = $this->getInfoInstance()->getOrder();
         }
@@ -49,7 +38,7 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
 
     public function getOrderPlaceRedirectUrl()
     {
-        return Mage::getUrl($this->moduleName . '/payment/redirect', array('_secure' => false));
+        return Mage::getUrl($this->moduleName . '/payment/redirect');
     }
 
     /**
@@ -63,15 +52,6 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
 
     public function getUrl() {
         return $this->_testUrl;
-    }
-
-    public function assignData($data)
-    {
-        $pchomePayHelper = Mage::helper($this->moduleName . '');
-        $pchomePayHelper->destroyChoosenPayment();
-        $choosenPayment = $data->getPChomePayChoosenPayment();
-        $pchomePayHelper->setChoosenPayment($choosenPayment);
-        return $this;
     }
 
     public function getValidPayments()
@@ -89,12 +69,7 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
 
     public function getPChomePayConfig($name)
     {
-        return $this->getMagentoConfig($this->prefix . $name);
-    }
-
-    public function getMagentoConfig($name)
-    {
-        return $this->getConfigData($name);
+        return $this->getConfigData($this->prefix . $name);
     }
 
     public function loadLibrary() {
@@ -103,9 +78,12 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
         }
     }
 
-    public function getHelper() {
-        $merchant_id = $this->getPChomePayConfig('merchant_id');
-        return new PChomePayCartLibrary(array('merchantId' => $merchant_id));
+    public function getPChomePayClient() {
+        $appID = $this->getPChomePayConfig('appID');
+        $secret = $this->getPChomePayConfig('secret');
+        $sandboxSecret = $this->getPChomePayConfig('sandboxSecret');
+        $testMode = $this->getPChomePayConfig('testMode');
+        return new PChomePayClient($appID, $secret, $sandboxSecret, $testMode);
     }
 
     public function getModuleUrl($action = '')

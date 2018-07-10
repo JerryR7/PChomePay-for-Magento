@@ -35,8 +35,7 @@ class PChomePayClient
     // 紀錄log
     private function log($message)
     {
-//        if ($this->debug) WC_Gateway_PCHomePay::log($message);
-        return;
+        Mage::log($message);
     }
 
     // 建立訂單
