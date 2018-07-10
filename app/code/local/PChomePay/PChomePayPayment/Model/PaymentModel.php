@@ -54,9 +54,36 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
         return $this->_testUrl;
     }
 
+    /**
+     * prepare params array to send it to gateway page via POST
+     *
+     * @return array
+     */
+    public function getFormFields() {
+        // get transaction amount and currency
+        if ($this->getConfigData('use_store_currency')) {
+            $price = number_format($this->getOrder()->getGrandTotal(), 2, '.', '');
+            $currency = $this->getOrder()->getOrderCurrencyCode();
+        } else {
+            $price = number_format($this->getOrder()->getBaseGrandTotal(), 2, '.', '');
+            $currency = $this->getOrder()->getBaseCurrencyCode();
+        }
+
+        $billing = $this->getOrder()->getBillingAddress();
+
+        $locale = explode('_', Mage::app()->getLocale()->getLocaleCode());
+
+        if (is_array($locale) && !empty($locale))
+            $locale = $locale[0];
+        else
+            $locale = $this->getDefaultLocale();
+
+        return $params;
+    }
+
     public function getValidPayments()
     {
-        $payments = $this->getPChomePayConfig('payment_methods', true);
+        $payments = $this->getPChomePayConfig('payment_methods');
         $trimed = trim($payments);
         return explode(',', $trimed);
     }
@@ -74,7 +101,7 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
 
     public function loadLibrary() {
         foreach ($this->libraryList as $path) {
-            include_once($path);
+            include_once('PChomePay/PChomePayPayment/Helper/Library/'. $path);
         }
     }
 
@@ -83,6 +110,7 @@ class PChomePay_PChomePayPayment_Model_PaymentModel extends Mage_Payment_Model_M
         $secret = $this->getPChomePayConfig('secret');
         $sandboxSecret = $this->getPChomePayConfig('sandboxSecret');
         $testMode = $this->getPChomePayConfig('testMode');
+        $this->loadLibrary();
         return new PChomePayClient($appID, $secret, $sandboxSecret, $testMode);
     }
 

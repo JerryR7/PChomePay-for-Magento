@@ -64,10 +64,10 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
 
             // testmode
-            $pchomepay_testmode = $mageModel->getConfigData('pchomepay_testMode');
-
+            $pchomepay_testmode = $mageModel->getPChomePayConfig('testMode');
+            Mage::log(123);
             $pchomepayClient = $mageModel->getPChomePayClient();
-exit;
+            exit;
 
 
             // =========================== POST DATA OP ===========================
