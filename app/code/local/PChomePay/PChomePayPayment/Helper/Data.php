@@ -6,8 +6,6 @@
  * Time: 上午11:06
  */
 
-include_once('Library/PChomePayClient.php');
-
 class PChomePay_PChomePayPayment_Helper_Data extends Mage_Payment_Helper_Data
 {
     private $prefix = 'pchomepay_';
