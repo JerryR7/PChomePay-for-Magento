@@ -12,7 +12,6 @@ class PChomePay_PChomePayPayment_Helper_Data extends Mage_Payment_Helper_Data
 
     public function getPendingPaymentStatus()
     {
-        Mage::log(123);
         if (version_compare(Mage::getVersion(), '1.4.0', '<')) {
             return Mage_Sales_Model_Order::STATE_HOLDED;
         }

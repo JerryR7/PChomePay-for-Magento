@@ -36,11 +36,8 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, $this->getPendingPaymentStatus(), '轉向至PChomePay中，請稍候...'
                 )->save();
 
-                Mage::log(123);
                 $order->sendNewOrderEmail();
                 $order->setEmailSent(true);
-                Mage::log(123);
-
             }
 
             $this->_redirect('pchomepaypayment/payment/pchomepay');
@@ -66,13 +63,11 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             // 在controller須先呼叫model cvs後才能使用getConfigData()
             $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
 
-            Mage::log($this->order);
-            Mage::log(123123);
             // testmode
             $pchomepay_testmode = $mageModel->getConfigData('pchomepay_testMode');
 
             $pchomepayClient = $mageModel->getPChomePayClient();
-
+exit;
 
 
             // =========================== POST DATA OP ===========================
