@@ -65,13 +65,28 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
 
             // testmode
             $pchomepay_testmode = $mageModel->getPChomePayConfig('testMode');
-            Mage::log(123);
-            $pchomepayClient = $mageModel->getPChomePayClient();
+            Mage::log('pchomepay_testmode: ' . $pchomepay_testmode);
+
+            $baseURL = $pchomepay_testmode == '1' ? $this->sb_base_url : $this->base_url;
+
+            $appID = $mageModel->getPChomePayConfig('appID');
+            $secret = $mageModel->getPChomePayConfig('secret');
+            $sandboxSecret = $mageModel->getPChomePayConfig('sandboxSecret');
+            $testMode = $mageModel->getPChomePayConfig('testMode');
+
+            $mageModel->paymentProcessSetting($appID, $secret, $sandboxSecret, $testMode);
+//            $mageModel->getToken();
+
+            $data = '{"order_id":"erictest0000007","pay_type": ["ATM","CARD","ACCT","EACH"],"amount":10,"return_url": "http://www.darenprint.com/pchomereturn","items":[{"name":"\u8d85\u5927\u9846\u82ad\u6a02","url":"_http:\/\/anywhere.com"},{"name":"\u8d85\u5927\u9846\u82ad\u6a02","url":"_http:\/\/anywhere.com"}],"buyer_email":"mychat.aa@gmail.com","atm_info":{"expire_days":3},"card_info":[{"installment":3, "rate":null},{"installment":6, "rate":0}]}';
+
+            $result = $mageModel->postPayment($data);
+
+            Mage::log($result);
+
             exit;
 
 
             // =========================== POST DATA OP ===========================
-            $post_url = ($pchomepay_testmode == '1') ? 'https://ccore.pchomepay.com/MPG/mpg_gateway' : 'https://core.pchomepay.com/MPG/mpg_gateway';
             $results = "<form method='post' action='" . $post_url . "' name='Spgateway'>";
             foreach ($this->generateSPGFormData() as $key => $value) {
                 $results .= "<input type='hidden' name='".$key."' value='" . $value . "' />";
