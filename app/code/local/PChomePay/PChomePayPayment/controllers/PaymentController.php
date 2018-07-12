@@ -8,7 +8,6 @@
 
 class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_Front_Action
 {
-    private $order;
     private $version = '1.4';
     private $order_condition;
     private $order_notification;
@@ -57,15 +56,14 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             // =========================== GET PARAMS OP ===========================
             // init
             $session = $this->_getCheckout();
-            $this->order = Mage::getModel('sales/order');
-            $this->order->loadByIncrementId($session->getLastRealOrderId());
+            $order = Mage::getModel('sales/order');
+            $order->loadByIncrementId($session->getLastRealOrderId());
 
             // 在controller須先呼叫model cvs後才能使用getConfigData()
             $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
 
             // testmode
             $pchomepay_testmode = $mageModel->getPChomePayConfig('testMode');
-            Mage::log('pchomepay_testmode: ' . $pchomepay_testmode);
 
             $baseURL = $pchomepay_testmode == '1' ? $this->sb_base_url : $this->base_url;
 
@@ -75,32 +73,100 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             $testMode = $mageModel->getPChomePayConfig('testMode');
 
             $mageModel->paymentProcessSetting($appID, $secret, $sandboxSecret, $testMode);
-//            $mageModel->getToken();
 
-            $data = '{"order_id":"erictest0000007","pay_type": ["ATM","CARD","ACCT","EACH"],"amount":10,"return_url": "http://www.darenprint.com/pchomereturn","items":[{"name":"\u8d85\u5927\u9846\u82ad\u6a02","url":"_http:\/\/anywhere.com"},{"name":"\u8d85\u5927\u9846\u82ad\u6a02","url":"_http:\/\/anywhere.com"}],"buyer_email":"mychat.aa@gmail.com","atm_info":{"expire_days":3},"card_info":[{"installment":3, "rate":null},{"installment":6, "rate":0}]}';
-
-            $result = $mageModel->postPayment($data);
-
-            Mage::log($result);
-
-            exit;
-
+            $pchomepayRequestData = json_encode($this->getPChomepayPaymentData());
 
             // =========================== POST DATA OP ===========================
-            $results = "<form method='post' action='" . $post_url . "' name='Spgateway'>";
-            foreach ($this->generateSPGFormData() as $key => $value) {
-                $results .= "<input type='hidden' name='".$key."' value='" . $value . "' />";
-            }
-            $results .= "</form></body><script>Spgateway.submit();</script>";
-
+            $result = $mageModel->postPayment($pchomepayRequestData);
             // =========================== POST DATA ED ===========================
 
-            echo $results;
+            $this->_redirectUrl($result->payment_url);
+            return;
+
         } catch (Mage_Core_Exception $e) {
             $this->_getCheckout()->addError($e->getMessage());
         } catch (Exception $e) {
             Mage::logException($e);
         }
+    }
+
+    private function getPChomepayPaymentData()
+    {
+        $session = $this->_getCheckout();
+        $order = Mage::getModel('sales/order');
+        $order->loadByIncrementId($session->getLastRealOrderId());
+        $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
+
+
+        $orderID = 'AM' . date('Ymd') . $session->getLastRealOrderId();
+        $payType = explode(',', $mageModel->getPChomePayConfig('paymentMethods'));
+        $amount = ceil($this->translateNumberFormat($order['base_grand_total']));
+        $returnUrl = Mage::getUrl('pchomepaypayment/payment/view');
+        $notifyUrl = Mage::getUrl('pchomepaypayment/payment/response');
+        $atmExpiredate = $mageModel->getPChomePayConfig('atmExpiredate');
+
+        if (isset($atmExpiredate) && (!preg_match('/^\d*$/', $atmExpiredate) || $atmExpiredate < 1 || $atmExpiredate > 5)) {
+            $atmExpiredate = 5;
+        }
+
+        $atm_info = (object)['expire_days' => (int)$atmExpiredate];
+
+        $cardInfo = [];
+
+        $cardInstallment = explode(',', $mageModel->getPChomePayConfig('cardInstallment'));
+
+        foreach ($cardInstallment as $items) {
+            switch ($items) {
+                case 'CRD_3' :
+                    $card_installment['installment'] = 3;
+                    break;
+                case 'CRD_6' :
+                    $card_installment['installment'] = 6;
+                    break;
+                case 'CRD_12' :
+                    $card_installment['installment'] = 12;
+                    break;
+                default :
+                    unset($card_installment);
+                    break;
+            }
+            if (isset($card_installment)) {
+                $cardInfo[] = (object)$card_installment;
+            }
+        }
+
+        $orderItems = $order->getItemsCollection();
+
+        $items = [];
+
+        foreach ($orderItems as $item) {
+            $productArray = [];
+            $product = Mage::getModel('catalog/product')
+                ->setStoreId(Mage::app()->getStore()->getId())
+                ->load($item->product_id);
+
+            $productName = $item->getName();
+            $productUrl = $product->getProductUrl();
+
+            $productArray['name'] = $productName;
+            $productArray['url'] = $productUrl;
+
+            $items[] = (object)$productArray;
+        }
+
+        $pchomepayRequestData = [
+            'order_id' => $orderID,
+            'pay_type' => $payType,
+            'amount' => $amount,
+            'return_url' => $returnUrl,
+            'notify_url' => $notifyUrl,
+            'items' => $items,
+            'atm_info' => $atm_info,
+        ];
+
+        if ($cardInfo) $pchomepayRequestData['card_info'] = $cardInfo;
+
+        return $pchomepayRequestData;
     }
 
     /**
