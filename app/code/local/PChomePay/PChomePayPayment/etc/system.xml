@@ -107,7 +107,7 @@
                             <label>訂單建立狀態</label>
                             <frontend_type>select</frontend_type>
                             <sort_order>11</sort_order>
-                            <source_model>pchomepaypayment/source_orderstatuses</source_model>
+                            <source_model>pchomepaypayment/source_orderStatuses</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -117,7 +117,7 @@
                             <label>付款完成狀態</label>
                             <frontend_type>select</frontend_type>
                             <sort_order>12</sort_order>
-                            <source_model>pchomepaypayment/source_orderstatuses</source_model>
+                            <source_model>pchomepaypayment/source_orderStatuses</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -127,7 +127,7 @@
                             <label>付款失敗狀態</label>
                             <frontend_type>select</frontend_type>
                             <sort_order>13</sort_order>
-                            <source_model>pchomepaypayment/source_orderstatuses</source_model>
+                            <source_model>pchomepaypayment/source_orderStatuses</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
