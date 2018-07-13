@@ -93,6 +93,45 @@
                             <show_in_store>0</show_in_store>
                             <comment>請輸入 ATM 虛擬帳號繳費期限(1~5天)，預設 5 天</comment>
                         </pchomepay_atmExpiredate>
+                        <pchomepay_cardLastNumber translate="label">
+                            <label>記錄信用卡末四碼</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </pchomepay_cardLastNumber>
+
+                        <pchomepay_create_status translate="label">
+                            <label>訂單建立狀態</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>11</sort_order>
+                            <source_model>pchomepaypayment/source_orderstatuses</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </pchomepay_create_status>
+
+                        <pchomepay_success_status translate="label">
+                            <label>付款完成狀態</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>12</sort_order>
+                            <source_model>pchomepaypayment/source_orderstatuses</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </pchomepay_success_status>
+
+                        <pchomepay_failed_status translate="label">
+                            <label>付款失敗狀態</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>13</sort_order>
+                            <source_model>pchomepaypayment/source_orderstatuses</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </pchomepay_failed_status>
 
                         <allowspecific translate="label">
                             <label>Payment from Applicable Countries</label>

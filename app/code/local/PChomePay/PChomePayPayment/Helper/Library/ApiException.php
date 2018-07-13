@@ -6,8 +6,6 @@
  * Time: 下午3:44
  */
 
-if (!defined('ABSPATH')) exit;
-
 class ApiException
 {
     // auth error

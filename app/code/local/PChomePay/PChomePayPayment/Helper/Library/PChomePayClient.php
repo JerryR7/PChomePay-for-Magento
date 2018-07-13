@@ -41,6 +41,7 @@ class PChomePayClient
     // 建立訂單
     public function postPayment($data)
     {
+        $this->log($this->postPaymentURL);
         return $this->post_request($this->postPaymentURL, $data);
     }
 
@@ -65,49 +66,72 @@ class PChomePayClient
     {
         $userAuth = "{$this->appID}:{$this->secret}";
 
-        $r = wp_remote_post($this->tokenURL, array(
-            'headers' => array(
-                'Content-type' => 'application/json',
-                'Authorization' => 'Basic ' . base64_encode($userAuth),
-            ),
+        $client = new Varien_Http_Client($this->tokenURL);
+        $client->setMethod(Varien_Http_Client::POST);
+        $client->setHeaders(array(
+            'Content-type' => 'application/json',
+            'Authorization' => 'Basic ' . base64_encode($userAuth),
         ));
 
-        $body = wp_remote_retrieve_body($r);
-
-        return $this->handleResult($body);
+        try{
+            $response = $client->request();
+            if ($response->isSuccessful()) {
+                $this->log($response->getBody());
+                return $this->handleResult($response->getBody());
+            }
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
+            throw new $e;
+        }
     }
 
     protected function post_request($method, $postdata)
     {
         $token = $this->getToken();
 
-        $r = wp_remote_post($method, array(
-            'headers' => array(
-                'Content-type' => 'application/json',
-                'pcpay-token' => $token->token,
-            ),
-            'body' => $postdata,
+        $client = new Varien_Http_Client($method);
+        $client->setMethod(Varien_Http_Client::POST);
+        $client->setHeaders(array(
+            'Content-type' => 'application/json',
+            'pcpay-token' => $token->token,
         ));
+        $client->setRawData($postdata);
 
-        $body = wp_remote_retrieve_body($r);
-
-        return $this->handleResult($body);
+        try{
+            $response = $client->request();
+            if ($response->isSuccessful()) {
+                $this->log($response->getBody());
+                return $this->handleResult($response->getBody());
+            }
+        } catch (Exception $e) {
+            $this->log($response);
+            $this->log($e->getMessage());
+            throw new $e;
+        }
     }
 
     protected function get_request($method)
     {
         $token = $this->getToken();
 
-        $r = wp_remote_get($method, array(
-            'headers' => array(
-                'Content-type' => 'application/json',
-                'pcpay-token' => $token->token,
-            )
+        $client = new Varien_Http_Client($method);
+        $client->setMethod(Varien_Http_Client::GET);
+        $client->setHeaders(array(
+            'Content-type' => 'application/json',
+            'pcpay-token' => $token->token,
         ));
 
-        $body = wp_remote_retrieve_body($r);
-
-        return $this->handleResult($body);
+        try{
+            $response = $client->request();
+            if ($response->isSuccessful()) {
+                $this->log($response->getBody());
+                return $this->handleResult($response->getBody());
+            }
+        } catch (Exception $e) {
+            $this->log($response);
+            $this->log($e->getMessage());
+            throw new $e;
+        }
     }
 
     private function handleResult($result)

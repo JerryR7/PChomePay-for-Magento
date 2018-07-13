@@ -8,6 +8,7 @@
 
 class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_Front_Action
 {
+    private $prefix = 'pchomepay_';
     private $version = '1.4';
     private $order_condition;
     private $order_notification;
@@ -17,14 +18,16 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
      *
      * @return Mage_Checkout_Model_Session
      */
-    protected function _getCheckout() {
+    protected function _getCheckout()
+    {
         return Mage::getSingleton('checkout/session');
     }
 
     /**
      * when customer selects pchomepaypayment payment method
      */
-    public function redirectAction() {
+    public function redirectAction()
+    {
         try {
             $session = $this->_getCheckout();
             $order = Mage::getModel('sales/order');
@@ -51,7 +54,8 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
 
 
     ///////////////////////////////// PChomePay Payment Action /////////////////////////////////////////////
-    public function pchomepayAction() {
+    public function pchomepayAction()
+    {
         try {
             // =========================== GET PARAMS OP ===========================
             // init
@@ -62,22 +66,19 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             // 在controller須先呼叫model cvs後才能使用getConfigData()
             $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
 
-            // testmode
-            $pchomepay_testmode = $mageModel->getPChomePayConfig('testMode');
-
-            $baseURL = $pchomepay_testmode == '1' ? $this->sb_base_url : $this->base_url;
-
             $appID = $mageModel->getPChomePayConfig('appID');
             $secret = $mageModel->getPChomePayConfig('secret');
             $sandboxSecret = $mageModel->getPChomePayConfig('sandboxSecret');
             $testMode = $mageModel->getPChomePayConfig('testMode');
 
-            $mageModel->paymentProcessSetting($appID, $secret, $sandboxSecret, $testMode);
+            $mageModel->loadLibrary();
 
-            $pchomepayRequestData = json_encode($this->getPChomepayPaymentData());
+            $pchomepayPaymentClient = new PChomePayClient($appID, $secret, $sandboxSecret, $testMode);
+
+            $pchomepayRequestData = json_encode($this->getPChomepayPaymentRequestData());
 
             // =========================== POST DATA OP ===========================
-            $result = $mageModel->postPayment($pchomepayRequestData);
+            $result = $pchomepayPaymentClient->postPayment($pchomepayRequestData);
             // =========================== POST DATA ED ===========================
 
             $this->_redirectUrl($result->payment_url);
@@ -90,18 +91,17 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         }
     }
 
-    private function getPChomepayPaymentData()
+    private function getPChomepayPaymentRequestData()
     {
         $session = $this->_getCheckout();
         $order = Mage::getModel('sales/order');
         $order->loadByIncrementId($session->getLastRealOrderId());
         $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
 
-
         $orderID = 'AM' . date('Ymd') . $session->getLastRealOrderId();
         $payType = explode(',', $mageModel->getPChomePayConfig('paymentMethods'));
         $amount = ceil($this->translateNumberFormat($order['base_grand_total']));
-        $returnUrl = Mage::getUrl('pchomepaypayment/payment/view');
+        $returnUrl = Mage::getUrl('pchomepaypayment/payment/ordersuccess');
         $notifyUrl = Mage::getUrl('pchomepaypayment/payment/response');
         $atmExpiredate = $mageModel->getPChomePayConfig('atmExpiredate');
 
@@ -172,32 +172,83 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
     /**
      * pchomepaypayment returns POST variables to this action
      */
-    public function responseAction() {
-        $status = $this->responseCheck();
+    public function responseAction()
+    {
+
+        usleep(500000);
+
         $request = $this->getRequest()->getPost();
 
-        $MerchantOrderNo = $request['MerchantOrderNo'];
-        $order = Mage::getModel('sales/order');
-        $order->loadByIncrementId($MerchantOrderNo);
+        $notify_type = $request['notify_type'];
+        $notify_message = $request['notify_message'];
 
-        if ($status == 'success') {
-            $order->setState('Complete', 'Complete', 'PChomePayPayment success!')->save();
-        } else {
-            $order->setState('Pending', 'Pending', 'PChomePayPayment failure!')->save();
+        if (!$notify_type || !$notify_message) {
+            http_response_code(404);
+            exit;
         }
+
+        $order_data = json_decode(str_replace('\"', '"', $notify_message));
+
+        Mage::log($order_data);
+
+        $session = $this->_getCheckout();
+        $order = Mage::getModel('sales/order');
+        $order->loadByIncrementId($session->getLastRealOrderId($order_data->order_id));
+        $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
+        $mageModel->loadLibrary();
+
+        # 紀錄訂單付款方式
+        switch ($order_data->pay_type) {
+            case 'ATM':
+                $pay_type_note = 'ATM 付款';
+                $pay_type_note .= '<br>ATM虛擬帳號: ' . $order_data->payment_info->bank_code . ' - ' . $order_data->payment_info->virtual_account;
+                break;
+            case 'CARD':
+                if ($order_data->payment_info->installment == 1) {
+                    $pay_type_note = '信用卡 付款 (一次付清)';
+                } else {
+                    $pay_type_note = '信用卡 分期付款 (' . $order_data->payment_info->installment . '期)';
+                }
+
+                if ($mageModel->getPChomePayConfig('cardLastNumber') == '1') $pay_type_note .= '<br>末四碼: ' . $order_data->payment_info->card_last_number;
+
+                break;
+            case 'ACCT':
+                $pay_type_note = '支付連餘額 付款';
+                break;
+            case 'EACH':
+                $pay_type_note = '銀行支付 付款';
+                break;
+            default:
+                $pay_type_note = $order_data->pay_type . '付款';
+        }
+
+        if ($notify_type == 'order_audit') {
+            $status = $order->getState();
+            $comment = sprintf('訂單交易等待中。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
+            $order->setState($status, $status, $comment, false)->save();
+        } elseif ($notify_type == 'order_expired') {
+            $status = $this->paymentModel->getOpayConfig('failed_status');
+            if ($order_data->status_code) {
+                $comment = $pay_type_note . '<br>' . sprintf('訂單已失敗。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
+                $order->setState($status, $status, $comment, true)->save();
+            } else {
+                $order->setState($status, $status, '訂單已失敗。', true)->save();
+            }
+        } elseif ($notify_type == 'order_confirm') {
+            $status = $mageModel->getPChomePayConfig('success_status');
+            $order->setState($status, $status, $pay_type_note . '<br>訂單已成功。', true)->save();
+        }
+
+        unset($status, $pattern, $comment);
+
+        echo 'success';
+        exit();
     }
 
-    public function viewAction() {
-        $status = $this->responseCheck();
-        $request = $this->getRequest()->getPost();
-
-        if ($status == 'success') {
-            //A Success Message
-            Mage::getSingleton('core/session')->addSuccess("PChomePayPayment success!");
-        } else {
-            //A Error Message
-            Mage::getSingleton('core/session')->addError("PChomePayPayment failure!");
-        }
+    public function ordersuccessAction()
+    {
+        Mage::getSingleton('core/session')->addSuccess("付款成功!");
 
         //These lines are required to get it to work
         session_write_close(); //THIS LINE IS VERY IMPORTANT!
@@ -205,51 +256,13 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         $this->_redirect('checkout/cart');
     }
 
-    public function responseCheck() {
-        $result = "";
-
-        // 在controller須先呼叫model cvs後才能使用getConfigData()
-        $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_Payment');
-
-        $hashiv = trim($mageModel->getConfigData('pchomepay_hashiv'));
-        $hashkey = trim($mageModel->getConfigData('pchomepay_hashkey'));
-
-        $request = $this->getRequest()->getPost();
-
-        $Amt = $request['Amt'];
-        $MerchantID = $request['MerchantID'];
-        $MerchantOrderNo = $request['MerchantOrderNo'];
-        $TradeNo = $request['TradeNo'];
-        $Status = $request['Status'];
-        $CheckCode = $request['CheckCode'];
-
-        // 訂單
-        $session = $this->_getCheckout();
-        $order = Mage::getModel('sales/order');
-        $order->loadByIncrementId($MerchantOrderNo);
-
-        // 金額
-        $price = $this->translateNumberFormat($order['base_grand_total']);
-
-        // check code
-        $check_code = "&Amt=" . $price . "&MerchantID=" . $MerchantID . "&MerchantOrderNo=" . $MerchantOrderNo . "&TradeNo=" . $TradeNo;
-        $check_code = "HashIV=" . $hashiv . $check_code . "&HashKey=" . $hashkey;
-        $check_code = strtoupper(hash("sha256", $check_code));
-
-        if (($Status == 'SUCCESS' or $Status = 'CUSTOM') && $Amt == $price && $CheckCode == $check_code) {
-            $result = 'success';
-        } else {
-            $result = 'failed';
-        }
-
-        return $result;
-    }
-
-    protected function getPendingPaymentStatus() {
+    protected function getPendingPaymentStatus()
+    {
         return Mage::helper('pchomepaypayment')->getPendingPaymentStatus();
     }
 
-    Public function translateNumberFormat($price) {
+    Public function translateNumberFormat($price)
+    {
         $priceTranslate = explode(".", $price);
         $result = $priceTranslate[0];
 
