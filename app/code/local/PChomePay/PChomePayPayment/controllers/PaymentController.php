@@ -101,7 +101,8 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         $orderID = 'AM' . date('Ymd') . $session->getLastRealOrderId();
         $payType = explode(',', $mageModel->getPChomePayConfig('paymentMethods'));
         $amount = ceil($this->translateNumberFormat($order['base_grand_total']));
-        $returnUrl = Mage::getUrl('pchomepaypayment/payment/ordersuccess');
+        $returnUrl = Mage::getUrl('pchomepaypayment/payment/paymentresult/?result=success');
+        $failReturnUrl = Mage::getUrl('pchomepaypayment/payment/paymentresult/?result=fail');
         $notifyUrl = Mage::getUrl('pchomepaypayment/payment/response');
         $atmExpiredate = $mageModel->getPChomePayConfig('atmExpiredate');
 
@@ -159,6 +160,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             'pay_type' => $payType,
             'amount' => $amount,
             'return_url' => $returnUrl,
+            'fail_return_url' => $failReturnUrl,
             'notify_url' => $notifyUrl,
             'items' => $items,
             'atm_info' => $atm_info,
@@ -246,9 +248,17 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         exit();
     }
 
-    public function ordersuccessAction()
+    public function paymentresultAction()
     {
-        Mage::getSingleton('core/session')->addSuccess("付款成功!");
+        $result = $_GET["result"];
+
+        if ($result == 'success') {
+            //A Success Message
+            Mage::getSingleton('core/session')->addSuccess("付款成功!");
+        } else {
+            //A Error Message
+            Mage::getSingleton('core/session')->addError("付款失敗!");
+        }
 
         //These lines are required to get it to work
         session_write_close(); //THIS LINE IS VERY IMPORTANT!
