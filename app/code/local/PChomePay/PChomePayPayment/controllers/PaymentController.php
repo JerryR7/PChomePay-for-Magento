@@ -101,8 +101,8 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         $orderID = 'AM' . date('Ymd') . $session->getLastRealOrderId();
         $payType = explode(',', $mageModel->getPChomePayConfig('paymentMethods'));
         $amount = ceil($this->translateNumberFormat($order['base_grand_total']));
-        $returnUrl = Mage::getUrl('pchomepaypayment/payment/paymentresult/?result=success');
-        $failReturnUrl = Mage::getUrl('pchomepaypayment/payment/paymentresult/?result=fail');
+        $returnUrl = Mage::getUrl('pchomepaypayment/payment/paymentresult/') . '?result=success';
+        $failReturnUrl = Mage::getUrl('pchomepaypayment/payment/paymentresult/') . '?result=fail';
         $notifyUrl = Mage::getUrl('pchomepaypayment/payment/response');
         $atmExpiredate = $mageModel->getPChomePayConfig('atmExpiredate');
 
