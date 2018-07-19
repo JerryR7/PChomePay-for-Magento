@@ -195,7 +195,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
 
         $session = $this->_getCheckout();
         $order = Mage::getModel('sales/order');
-        $order->loadByIncrementId($session->getLastRealOrderId($order_data->order_id));
+        $order->loadByIncrementId($session->getLastRealOrderId(substr($order_data->order_id, 10)));
         $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
         $mageModel->loadLibrary();
 
