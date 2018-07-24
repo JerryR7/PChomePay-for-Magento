@@ -230,7 +230,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             $comment = sprintf('訂單交易等待中。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
             $order->setState($status, $status, $comment, false)->save();
         } elseif ($notify_type == 'order_expired') {
-            $status = $this->paymentModel->getPChomePayConfig('failed_status');
+            $status = $mageModel->getPChomePayConfig('failed_status');
             if ($order_data->status_code) {
                 $comment = $pay_type_note . '<br>' . sprintf('訂單已失敗。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
                 $order->setState($status, $status, $comment, true)->save();
