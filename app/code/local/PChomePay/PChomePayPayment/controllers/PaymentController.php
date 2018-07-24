@@ -193,9 +193,8 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
 
         Mage::log($order_data);
 
-        $session = $this->_getCheckout();
         $order = Mage::getModel('sales/order');
-        $order->loadByIncrementId($session->getLastRealOrderId(substr($order_data->order_id, 10)));
+        $order->loadByIncrementId(substr($order_data->order_id, 10));
         $mageModel = Mage::getModel('PChomePay_PChomePayPayment_Model_PaymentModel');
         $mageModel->loadLibrary();
 
@@ -241,6 +240,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             $status = $mageModel->getPChomePayConfig('success_status');
             $order->setState($status, $status, $pay_type_note . '<br>訂單已成功。', true)->save();
         }
+        unset($status, $comment);
 
         echo 'success';
         exit();
