@@ -81,6 +81,8 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
             $result = $pchomepayPaymentClient->postPayment($pchomepayRequestData);
             // =========================== POST DATA ED ===========================
 
+            $order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, $this->getPendingPaymentStatus(), '訂單編號：' . $result->order_id)->save();
+
             $this->_redirectUrl($result->payment_url);
             return;
 
