@@ -223,12 +223,12 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
                 $pay_type_note = '銀行支付 付款';
                 break;
             default:
-                $pay_type_note = $order_data->pay_type . '付款';
+                $pay_type_note = '未選擇付款方式';
         }
 
         if ($notify_type == 'order_audit') {
             $status = $order->getState();
-            $comment = sprintf('訂單交易等待中。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
+            $comment = $pay_type_note . '<br>' . sprintf('訂單交易等待中。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
             $order->setState($status, $status, $comment, false)->save();
         } elseif ($notify_type == 'order_expired') {
             $status = $mageModel->getPChomePayConfig('failed_status');
@@ -236,7 +236,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
                 $comment = $pay_type_note . '<br>' . sprintf('訂單已失敗。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
                 $order->setState($status, $status, $comment, true)->save();
             } else {
-                $order->setState($status, $status, '訂單已失敗。', true)->save();
+                $order->setState($status, $status, $pay_type_note . '<br>訂單已失敗。', true)->save();
             }
         } elseif ($notify_type == 'order_confirm') {
             $status = $mageModel->getPChomePayConfig('success_status');

@@ -111,6 +111,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <comment>請勿選擇Complete 或 Closed</comment>
                         </pchomepay_create_status>
 
                         <pchomepay_success_status translate="label">
@@ -121,6 +122,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <comment>請勿選擇Complete 或 Closed</comment>
                         </pchomepay_success_status>
 
                         <pchomepay_failed_status translate="label">
@@ -131,6 +133,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <comment>請勿選擇Complete 或 Closed</comment>
                         </pchomepay_failed_status>
 
                         <allowspecific translate="label">
