@@ -11,7 +11,4 @@
 "pchomepay_payment_text_acct","支付連餘額付款"
 "pchomepay_payment_order_comment_payment_method","付款方式: %s"
 "pchomepay_payment_order_comment_payment_result","付款結果 : (%s)%s"
-"pchomepay_payment_order_comment_atm","取號結果 : (%s)%s, 銀行代碼 : %s, 虛擬帳號 : %s, 付款截止日 : %s"
-"pchomepay_payment_order_comment_cvs","取號結果 : (%s)%s, 繳費代碼 : %s, 付款截止日 : %s"
-"pchomepay_payment_order_comment_barcode","取號結果 : (%s)%s, 付款截止日 : %s, 第1段條碼號碼 : %s, 第2段條碼號碼 : %s, 第3段條碼號碼 : %s"
 "pchomepay_payment_order_comment_payment_failure","付款失敗, 錯誤訊息 : %s"

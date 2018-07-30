@@ -227,7 +227,6 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
         }
 
         if ($notify_type == 'order_audit') {
-            $order->addStatusHistoryComment($pay_type_note);
             $status = $order->getState();
             $comment = sprintf('訂單交易等待中。<br>error code : %1$s<br>message : %2$s', $order_data->status_code, OrderStatusCodeEnum::getErrMsg($order_data->status_code));
             $order->setState($status, $status, $comment, false)->save();
@@ -257,7 +256,7 @@ class PChomePay_PChomePayPayment_PaymentController extends Mage_Core_Controller_
 
         if ($result == 'success') {
             //A Success Message
-            Mage::getSingleton('core/session')->addSuccess("付款成功!");
+            Mage::getSingleton('core/session')->addSuccess("已收到訂單!");
         } else {
             //A Error Message
             Mage::getSingleton('core/session')->addError("付款失敗!");
